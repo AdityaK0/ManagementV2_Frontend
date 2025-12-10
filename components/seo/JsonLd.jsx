@@ -1,0 +1,16 @@
+/**
+ * JSON-LD Structured Data Component
+ * Renders JSON-LD script tags for SEO
+ */
+
+export default function JsonLd({ data }) {
+  if (!data) return null;
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+

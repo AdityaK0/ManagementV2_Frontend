@@ -1,0 +1,35 @@
+---- 
+
+while on pagination why we call extra api call to products api when we are already calling filter
+api for specific page
+
+
+--- ON LOCAL SIDE BRAVE WILL BLOCLK THE SITE NAME START WITH AD BUT IN LIVE IT WONT so
+IN LOCAL DONT ADD SITE WITH AD IF WANT TO USE THE BRAVE IN LOCAL
+    
+
+
+----- 
+
+Need to implement subdomain kind of thing after all work done 
+so that it could look like own property kind of thing
+
+
+
+-- ADD & FIX 
+
+Add <- back kind of button in portfolio product detail view page 
+
+FIX <- On homepage the portfolio api includes portfolio details which includes the about and contact still why
+      when go to the contact and about it calls the portfolio api again
+
+CONFUSE <- we have one best option is to pass the encoded data in in the product card so we can save the
+           api call and if someone miss behaves with the product url like the encoded data in data param then only call the api 
+           for specific product 
+
+another way which i currently we have is the heap map in memory data but here
+the cons is when the page gets refreshed then it call the api to get that partiular product and in 
+above encode and decode idea even if you refresh you still get the data only call when someone misbehaves with url
+but may be then we have to deal with the SEO issue but SEO reads title and all right then i think we can update that up 
+from the decoded product data also 
+

@@ -1,5 +1,6 @@
 /**
  * JSON-LD Structured Data Component
+ * 
  * Renders JSON-LD script tags for SEO
  */
 

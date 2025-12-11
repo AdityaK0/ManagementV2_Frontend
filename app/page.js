@@ -1,4 +1,5 @@
 export default function Home() {
+  console.log("Home",process.env.NEXT_PUBLIC_API_URL_FASTAPI);
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center space-y-4">
@@ -7,7 +8,7 @@ export default function Home() {
           Please visit a specific vendor portfolio using their unique URL.
         </p>
         <p className="text-sm text-muted-foreground">
-          Example: /vendor-name
+          
         </p>
       </div>
     </div>

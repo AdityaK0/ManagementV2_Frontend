@@ -27,34 +27,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ✅ ADD: Create production env file for Next.js build
-      - name: Create .env.production
-        run: |
-          echo "NEXT_PUBLIC_API_URL_FASTAPI=${{ secrets.NEXT_PUBLIC_API_URL_FASTAPI }}" >> .env.production
-          echo "NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}" >> .env.production
-
       - name: Build frontend
         run: npm run build
 
-      # ✅ Upload the entire Next.js build folder (app router version)
-      - name: Upload Next.js build to S3
+      # Upload static assets with long-term cache
+      - name: Upload static assets to S3
         run: |
-          aws s3 sync .next s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }}/_next \
+          aws s3 sync .next/static s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }}/_next/static \
             --cache-control "public,max-age=31536000,immutable" \
             --delete
 
-      # Upload static assets
-      - name: Upload public assets
-        run: |
-          aws s3 sync public s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }} \
-            --cache-control "no-cache" \
-            --delete
-
-      # Upload main HTML entrypoint
-      - name: Upload index.html
+      # Upload HTML / SSR entrypoint with no-cache
+      - name: Upload index entry HTML
         run: |
           aws s3 cp .next/server/app/index.html s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }}/index.html \
-            --cache-control "no-store"
+            --cache-control "no-store,no-cache,must-revalidate,proxy-revalidate,max-age=0"
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
@@ -64,58 +51,3 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-
-# name: Deploy Frontend to S3
-
-# on:
-#   push:
-#     branches: [main]
-
-# jobs:
-#   deploy-frontend:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION }}
-
-#       - name: Setup Node
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: 20
-
-#       - name: Install dependencies
-#         run: npm ci
-
-#       - name: Build frontend
-#         run: npm run build
-
-#       # Upload static assets with long-term cache
-#       - name: Upload static assets to S3
-#         run: |
-#           aws s3 sync .next/static s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }}/_next/static \
-#             --cache-control "public,max-age=31536000,immutable" \
-#             --delete
-
-#       # Upload HTML / SSR entrypoint with no-cache
-#       - name: Upload index entry HTML
-#         run: |
-#           aws s3 cp .next/server/app/index.html s3://${{ secrets.AWS_S3_FRONTEND_BUCKET }}/index.html \
-#             --cache-control "no-store,no-cache,must-revalidate,proxy-revalidate,max-age=0"
-
-#       - name: Invalidate CloudFront
-#         uses: chetan/invalidate-cloudfront-action@v2
-#         env:
-#           DISTRIBUTION: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
-#           PATHS: "/*"
-#           AWS_REGION: ${{ secrets.AWS_REGION }}
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

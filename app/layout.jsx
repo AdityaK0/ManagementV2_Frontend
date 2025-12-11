@@ -1,32 +1,4 @@
-// import { ThemeProvider } from '@/context/themeContext';
-// import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-// import { Toaster } from '@/components/ui/sonner';
-// import { Inter } from 'next/font/google';
-// import './globals.css';
-// import QueryProvider from "@/components/QueryProvider";
 
-// const inter = Inter({ subsets: ['latin'] });
-// const queryClient = new QueryClient();
-
-// export const metadata = {
-//   title: 'Vendor Portfolio',
-//   description: 'Discover amazing products from our vendors',
-// };
-
-// export default function RootLayout({ children }) {
-//   return (
-//     <html lang="en" suppressHydrationWarning>
-//       <body className={inter.className}>
-//         <QueryClientProvider client={queryClient}>
-//           <ThemeProvider>
-//             {children}
-//             <Toaster />
-//           </ThemeProvider>
-//         </QueryClientProvider>
-//       </body>
-//     </html>
-//   );
-// }
 
 
 import { Inter } from "next/font/google";

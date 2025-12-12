@@ -36,6 +36,7 @@ jobs:
           cp -r public build/public
           cp -r node_modules build/node_modules
           cp package.json build/
+          cp next.config.mjs build/
           tar -czf app.tar.gz -C build .
 
       - name: Upload to EC2

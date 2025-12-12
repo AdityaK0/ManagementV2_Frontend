@@ -48,7 +48,11 @@ jobs:
       - name: Prepare artifact
         run: |
           mkdir build
-          cp -r .next package.json next.config.mjs public build/
+          cp -r .next/standalone build/standalone
+          cp -r .next/static build/static
+          cp -r public build/public
+          cp package.json build/
+          cp next.config.mjs build/
           tar -czvf build-artifact.tar.gz -C build .
 
       - name: Upload artifact to EC2
@@ -58,7 +62,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "build-artifact.tar.gz"
-          target: "/home/ec2-user/ManagementV2_Frontend"
+          target: "/home/ec2-user/ManagementV2_Frontend/"
 
       - name: Run deploy script on EC2
         uses: appleboy/ssh-action@v0.1.10

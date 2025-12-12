@@ -18,25 +18,27 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install ALL dependencies including dev
         run: npm ci
 
       - name: Build Next.js
         run: npm run build
 
-      - name: Prepare Production Bundle
+      - name: Install production dependencies ONLY for deployment
+        run: |
+          rm -rf node_modules
+          npm ci --only=production
+
+      - name: Prepare Production Bundle (with node_modules)
         run: |
           mkdir build
           cp -r .next build/.next
           cp -r public build/public
+          cp -r node_modules build/node_modules
           cp package.json build/
-          cp package-lock.json build/
-
-      - name: Create app.tar.gz (safe, no tar errors)
-        run: |
           tar -czf app.tar.gz -C build .
 
-      - name: Upload artifact to EC2
+      - name: Upload to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -44,8 +46,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "app.tar.gz"
           target: "/home/ec2-user/ManagementV2_Frontend/"
-
-      - name: Run deploy script on EC2
+      
+      - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -53,15 +55,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/ManagementV2_Frontend
-            FILE=$(ls | grep ".tar.gz")
-            echo "Uploaded file name: $FILE"
-            
-            if [ "$FILE" != "app.tar.gz" ]; then
-              mv "$FILE" app.tar.gz
-              echo "Renamed to app.tar.gz"
-            else
-              echo "File already named app.tar.gz"
-            fi
-
-            cd /home/ec2-user/deploy
-            bash deploy.sh
+            tar -xzf app.tar.gz
+            rm app.tar.gz
+            pm2 delete portfolio || true
+            pm2 start node_modules/.bin/next --name "portfolio" -- start
+            pm2 save

@@ -52,5 +52,10 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            cd /home/ec2-user/ManagementV2_Frontend
+            FILE=$(ls | grep ".tar.gz")
+            echo "Uploaded file name: $FILE"
+            mv "$FILE" app.tar.gz
+            echo "Renamed to app.tar.gz"
             cd /home/ec2-user/deploy
             bash deploy.sh

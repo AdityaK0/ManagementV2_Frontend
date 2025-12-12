@@ -31,7 +31,6 @@
 //     '/((?!_next/static|_next/image|favicon.ico).*)',
 //   ],
 // }
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -41,18 +40,17 @@ export function middleware(req: NextRequest) {
 
   const domain = "fordgeindia.online";
 
-  // Ignore root domain + www
+  // Ignore main domain and www
   if (host === domain || host === `www.${domain}`) {
     return NextResponse.next();
   }
 
-  // Extract subdomain before .fordgeindia.online
+  // Handle subdomains
   if (host.endsWith(`.${domain}`)) {
-    const subdomain = host.replace(`.${domain}`, ""); // vendor slug
-
-    // Attach vendor slug to query params
-    url.searchParams.set("vendor", subdomain);
-
+    const subdomain = host.replace(`.${domain}`, "");
+    
+    // Rewrite to /[slug]
+    url.pathname = `/${subdomain}`;
     return NextResponse.rewrite(url);
   }
 
@@ -61,6 +59,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

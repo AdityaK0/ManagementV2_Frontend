@@ -1,4 +1,25 @@
-name: Deploy Backend
+# name: Deploy Backend
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: SSH into EC2 and run deploy script
+#         uses: appleboy/ssh-action@v0.1.10
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ec2-user
+#           key: ${{ secrets.EC2_SSH_KEY }}
+#           script: |
+#             cd /home/ec2-user/deploy
+#             ./deploy.sh
+
+name: Deploy Portfolio Frontend
 
 on:
   push:
@@ -6,10 +27,40 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: SSH into EC2 and run deploy script
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Prepare artifact
+        run: |
+          mkdir build
+          cp -r .next package.json next.config.mjs public build/
+          tar -czvf build-artifact.tar.gz -C build .
+
+      - name: Upload artifact to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "build-artifact.tar.gz"
+          target: "/home/ec2-user/ManagementV2_Frontend"
+
+      - name: Run deploy script on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}

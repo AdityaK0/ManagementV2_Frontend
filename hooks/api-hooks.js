@@ -49,60 +49,6 @@ export const useProduct = (slug, id, options = {}) => {
   });
 };
 
-// export const getSingleProduct = (slug,id)=>{ 
-//   return useQuery({
-//     queryKey:['products',slug,id],
-//     queryFn:()=>
-//       api.get(`/portfolio/public/${slug}/products/${id}`, {
-//       }),
-//     enabled: !!slug && !!id, // base condition
-//     ...options, 
-//   });
-// }
-
-// export function useProductsFilter(
-//   slug,
-//   { page = 1, min_price = '', max_price = '' } = {}
-// ) {
-//   return useQuery({
-//     queryKey: ['products-filter', slug, page, min_price, max_price],
-//     queryFn: () =>
-//       api.get(`/portfolio/public/${slug}/products/filter/`, {
-//         params: { page, min_price, max_price },
-//       }),
-//     enabled: !!slug && (min_price !== '' || max_price !== ''),
-
-//   });
-// }
-
-// export function useProductsFilter(
-//   slug,
-//   { page = 1, min_price = '', max_price = '' } = {},
-//   options = {}
-// ) {
-//   return useQuery({
-//     queryKey: ['products-filter', slug, page, min_price, max_price],
-//     queryFn: () =>
-//       api.get(`/portfolio/public/${slug}/products/filter/`, {
-//         params: { page, min_price, max_price },
-//       }),
-//     enabled: !!slug && (min_price !== '' || max_price !== ''),
-//     ...options, // allow mode-based overrides
-//   });
-// }
-
-
-
-
-// export const useCollections = (slug) => {
-//   return useQuery({
-//     queryKey: ['collections', slug],
-//     queryFn: () => api.get(`/portfolio/public/${slug}/collections/`),
-//     enabled: !!slug,
-//   });
-// };
-
-
 export const useCollections = (slug) => {
   return useQuery({
     queryKey: ['collections', slug],

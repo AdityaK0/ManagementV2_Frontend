@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { generateProductMetadata, generateProductSchema, generateBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 import ProductPageClient from './ProductPageClient';

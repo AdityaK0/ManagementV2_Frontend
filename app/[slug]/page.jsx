@@ -100,6 +100,7 @@
 //     </div>
 //   );
 // }
+export const runtime = 'edge';
 
 "use client";
 

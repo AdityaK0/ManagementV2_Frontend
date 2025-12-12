@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 'use client';
 
 import { usePortfolioContext } from '@/context/portfolioContext';

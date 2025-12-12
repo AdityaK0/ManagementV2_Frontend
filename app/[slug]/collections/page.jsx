@@ -1,4 +1,3 @@
-export const runtime = 'edge';
 'use client';
 
 import { useCollections } from '@/hooks/api-hooks';

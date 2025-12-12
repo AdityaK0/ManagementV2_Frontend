@@ -18,7 +18,6 @@
 #           script: |
 #             cd /home/ec2-user/deploy
 #             ./deploy.sh
-
 name: Deploy Portfolio Frontend
 
 on:
@@ -48,8 +47,7 @@ jobs:
       - name: Prepare artifact
         run: |
           mkdir build
-          cp -r .next/standalone build/standalone
-          cp -r .next/static build/static
+          cp -r .next build/.next
           cp -r public build/public
           cp package.json build/
           cp next.config.mjs build/

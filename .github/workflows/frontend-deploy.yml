@@ -55,7 +55,13 @@ jobs:
             cd /home/ec2-user/ManagementV2_Frontend
             FILE=$(ls | grep ".tar.gz")
             echo "Uploaded file name: $FILE"
-            mv "$FILE" app.tar.gz
-            echo "Renamed to app.tar.gz"
+            
+            if [ "$FILE" != "app.tar.gz" ]; then
+              mv "$FILE" app.tar.gz
+              echo "Renamed to app.tar.gz"
+            else
+              echo "File already named app.tar.gz"
+            fi
+
             cd /home/ec2-user/deploy
             bash deploy.sh

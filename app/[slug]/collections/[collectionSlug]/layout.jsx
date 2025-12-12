@@ -13,7 +13,6 @@ export async function generateMetadata({ params }) {
     );
     const portfolio = await portfolioResponse.json();
 
-    // Try to fetch collection data if available via API
     let collection = null;
     try {
       const collectionResponse = await fetch(

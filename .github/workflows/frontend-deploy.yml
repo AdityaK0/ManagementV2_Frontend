@@ -1,25 +1,3 @@
-# name: Deploy Backend
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: SSH into EC2 and run deploy script
-#         uses: appleboy/ssh-action@v0.1.10
-#         with:
-#           host: ${{ secrets.EC2_HOST }}
-#           username: ec2-user
-#           key: ${{ secrets.EC2_SSH_KEY }}
-#           script: |
-#             cd /home/ec2-user/deploy
-#             ./deploy.sh
-
-
 name: Deploy Portfolio Frontend
 
 on:
@@ -40,25 +18,24 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Build Next.js (Standalone)
+      - name: Build Next.js
         run: npm run build
 
-      - name: Prepare Production Artifact
+      - name: Prepare Build Artifact
         run: |
           mkdir -p deploy
-          cp -r .next/standalone deploy/
-          cp -r .next/static deploy/static
+          cp -r .next deploy/.next
           cp -r public deploy/public
           cp package.json deploy/
-          cp next.config.mjs deploy/
+          cp package-lock.json deploy/
           cd deploy
           tar -czvf app.tar.gz .
           mv app.tar.gz ../app.tar.gz
 
-      - name: Upload Artifact to EC2
+      - name: Upload artifact to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}

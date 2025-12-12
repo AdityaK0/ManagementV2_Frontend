@@ -1,5 +1,6 @@
 export default function Home() {
   console.log("Home",process.env.NEXT_PUBLIC_API_URL_FASTAPI);
+  console.log("Home ..............................");
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center space-y-4">

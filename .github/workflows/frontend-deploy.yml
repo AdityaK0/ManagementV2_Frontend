@@ -18,19 +18,18 @@
 #           script: |
 #             cd /home/ec2-user/deploy
 #             ./deploy.sh
-name: Deploy Portfolio Frontend
+name: Deploy NextJS SSR
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -38,36 +37,36 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies (Production Only)
+        run: npm ci --only=production
 
-      - name: Build Next.js
+      - name: Build Next.js (SSR)
         run: npm run build
 
-      - name: Prepare artifact
+      - name: Prepare Artifact
         run: |
-          mkdir build
-          cp -r .next build/.next
-          cp -r public build/public
-          cp package.json build/
-          cp next.config.mjs build/
-          tar -czvf build-artifact.tar.gz -C build .
+          tar -czvf app.tar.gz \
+            .next \
+            public \
+            node_modules \
+            package.json \
+            next.config.mjs
 
-      - name: Upload artifact to EC2
+      - name: Upload to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build-artifact.tar.gz"
-          target: "/home/ec2-user/ManagementV2_Frontend/"
+          source: "app.tar.gz"
+          target: "/home/ec2-user/portfolio_app/"
 
-      - name: Run deploy script on EC2
+      - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ec2-user/deploy
+            cd /home/ec2-user/portfolio_app
             ./deploy.sh
